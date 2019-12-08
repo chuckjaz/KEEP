@@ -366,7 +366,7 @@ pairing  <code>T<sup>n-1</sup></code> to the last <code>I<sup>j</sup></code> whe
 permutation is found. The first valid pairing found will be the last permutation given the
 ordering described above. This can be accomplished in worst case *O(nm)* steps.
 
-#### Second variant: Unordred resolution
+#### Second variant: Unordered resolution
 
 The resolution could be done in following steps:
 1. **Create a list of actual contexts** `G, A, B, C, ...` where `G` is a global context (global context usually means file, but also could be used to describe top level script implicit receiver). Top level non-extension functions have only `G` as context. Class members have that class as context. Extension function have their receivers added to context where they are defined. Running a function with receiver adds that receiver to the list of contexts where this function is defined.Types in the list could be duplicating. We will call those actual types `Cy` where `y` is the index
