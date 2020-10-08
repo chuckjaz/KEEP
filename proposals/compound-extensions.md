@@ -1,7 +1,7 @@
 # Compound Extensions
 
 * Type: Design proposal
-* Author: Chuck Jazdzewski
+* Authors: Chuck Jazdzewski, Werner Thumann
 * Status: proposed
 * Prototype: none
 * Discussion: tbd
@@ -275,7 +275,7 @@ The type expression syntax would be similarly extended to allow `(A.B, C).() -> 
 However, the type expression syntax is ambiguous at the `(` and it is not until the `.` is
 seen after the initial closing `)`.
 
-#### Using brackets
+##### Using brackets
 ```kotlin
 fun [A, B, C].someMethod(v: Int): Int = ...
 
@@ -286,7 +286,7 @@ The types are similarly unambiguous without introducing the same syntactic ambig
 this require introducing a use for `[` in a type expression that might be better reserved by
 a feature more widely leveraged such as tuples.
 
-#### Using a pseudo-keyword
+##### Using a pseudo-keyword
 
 ```kotlin
 extension fun (A, B, C).someMethod(v: Int): Int = ...
@@ -296,6 +296,48 @@ val a: extension (A, B, C).(Int)->Int = ...
 Using a pseudo keyword avoids the ambiguity of the `(` in the type expression. A pseudo-
 keyword could also be used with the `[`...`]` syntax to leave a unadorned `[`...`]` to
 mean a tuple in the future.
+
+##### Using extension blocks
+
+```kotlin
+class A
+class B
+
+extension A {
+    fun first() { } // extension for A
+    
+    extension B {
+        fun second() { } // extension for B in the context of A
+    }
+
+    fun B.third() { } // traditional style still possible
+}
+```
+
+Here the pseudo keyword `extension` opens a block where extension methods for the specified type can be defined.
+The key point is that extension blocks can be nested which defines the hierarchy of extensions.
+This also reflects very well that the concept in fact extends a type with another extension.
+
+Moreover, this syntax could be reused later to support another much requested feature:
+extending a given type to comply to an interface.
+
+```kotlin
+class A
+interface I {
+    fun method()
+}
+
+extension A : I {
+    // this extension block must override all methods in interface I, else error
+    override fun method() { }
+    // the definition of further extension methods is still possible
+    fun anotherMethod() { }
+}
+
+val x: I = A() // this is now possible because of the extension block
+```
+
+For the function type expression, one of the proposals above has to be chosen.
 
 ### Matching rules
 
